@@ -1,12 +1,12 @@
 # Simple 8-bit Assembler Simulator
-A simulator which provides a simplified assembler syntax (based on NASM) and is simulating a x86 like cpu. Press Help inside the simulator to see an overview about the supported instructions.
+A simulator which provides a simplified assembler syntax (based on NASM) and is simulating a x86 like cpu. Press Help inside the simulator to see an overview about the supported instructions.  Simplified to 64 bytes of RAM.  Based on a system by Marco Schweighauser here: https://github.com/Schweigi/assembler-simulator
 
-####<a href="http://schweigi.github.io/assembler-simulator/index.html" target="_blank">TRY IT ONLINE</a>
+####<a href="http://jmacbeth.github.io/assembler-simulator-64-bytes/index.html" target="_blank">TRY IT ONLINE</a>
 
 ### Features
 - 8-bit CPU
 - 4 general purpose registers
-- 256 bytes of memory
+- 64 bytes of memory
 - Console output
 
 ### How to build
@@ -14,12 +14,10 @@ Make sure you have <a href="http://www.gruntjs.com/" target="_blank">Grunt</a> i
 Run `grunt` to build the project.
 
 ### Background
-A technical introduction is available on my blog: [www.mschweighauser.com](https://www.mschweighauser.com/make-your-own-assembler-simulator-in-javascript-part1/).
+A technical introduction is available on Marco Schweighauser's blog: [www.mschweighauser.com](https://www.mschweighauser.com/make-your-own-assembler-simulator-in-javascript-part1/).
 
 ### License
 **The MIT License**
-
-Copyright (c) 2015 Marco Schweighauser
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
