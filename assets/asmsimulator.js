@@ -1365,7 +1365,7 @@ var app = angular.module('ASMSimulator', []);
     $scope.speed = 4;
     $scope.outputStartIndex = 60;
 
-    $scope.code = "; Simple example\n	JMP start\nhello: DB \"Hello World!\" ; Variable\n       DB 0";
+    $scope.code = "; Simple example\n	JMP start\nhello: DB \"Hello World!\"\n       DB 0";
 
     $scope.reset = function () {
         cpu.reset();
