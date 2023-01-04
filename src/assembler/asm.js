@@ -259,6 +259,15 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                         opCode = opcodes.ADD_ADDRESS_TO_REG;
                                     else if (p1.type === "register" && p2.type === "number")
                                         opCode = opcodes.ADD_NUMBER_TO_REG;
+                                    // JCM added ...
+                                    else if (p1.type === "address" && p2.type === "register")
+                                        opCode = opcodes.ADD_REG_TO_ADDRESS;
+                                    else if (p1.type === "regaddress" && p2.type === "register")
+                                        opCode = opcodes.ADD_REG_TO_REGADDRESS;
+                                    else if (p1.type === "address" && p2.type === "number")
+                                        opCode = opcodes.ADD_NUMBER_TO_ADDRESS;
+                                    else if (p1.type === "regaddress" && p2.type === "number")
+                                        opCode = opcodes.ADD_NUMBER_TO_REGADDRESS;
                                     else
                                         throw "ADD does not support this operands";
 
@@ -276,6 +285,15 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                         opCode = opcodes.SUB_ADDRESS_FROM_REG;
                                     else if (p1.type === "register" && p2.type === "number")
                                         opCode = opcodes.SUB_NUMBER_FROM_REG;
+                                    // JCM added ...
+                                    else if (p1.type === "address" && p2.type === "register")
+                                        opCode = opcodes.SUB_REG_FROM_ADDRESS;
+                                    else if (p1.type === "regaddress" && p2.type === "register")
+                                        opCode = opcodes.SUB_REG_FROM_REGADDRESS;
+                                    else if (p1.type === "address" && p2.type === "number")
+                                        opCode = opcodes.SUB_NUMBER_FROM_ADDRESS;
+                                    else if (p1.type === "regaddress" && p2.type === "number")
+                                        opCode = opcodes.SUB_NUMBER_FROM_REGADDRESS;
                                     else
                                         throw "SUB does not support this operands";
 
@@ -317,6 +335,15 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                         opCode = opcodes.CMP_ADDRESS_WITH_REG;
                                     else if (p1.type === "register" && p2.type === "number")
                                         opCode = opcodes.CMP_NUMBER_WITH_REG;
+                                    // JCM added ...
+                                    else if (p1.type === "address" && p2.type === "register")
+                                        opCode = opcodes.CMP_REG_TO_ADDRESS;
+                                    else if (p1.type === "regaddress" && p2.type === "register")
+                                        opCode = opcodes.CMP_REG_TO_REGADDRESS;
+                                    else if (p1.type === "address" && p2.type === "number")
+                                        opCode = opcodes.CMP_NUMBER_TO_ADDRESS;
+                                    else if (p1.type === "regaddress" && p2.type === "number")
+                                        opCode = opcodes.CMP_NUMBER_TO_REGADDRESS;
                                     else
                                         throw "CMP does not support this operands";
 
@@ -463,11 +490,21 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                     code.push(opCode, p1.value);
                                     break;
                                 case 'RET':
-                                    checkNoExtraArg(instr, match[op1_group]);
+                                    // JCM: now supports arg for ret
+                                    checkNoExtraArg(instr, match[op2_group]);
 
-                                    opCode = opcodes.RET;
-
-                                    code.push(opCode);
+                                    if (match[op1_group] === undefined) {
+                                        opCode = opcodes.RET;
+                                        code.push(opCode);
+                                    } else {
+                                        p1 = getValue(match[op1_group]);
+                                        if (p1.type === "number") {
+                                            opCode = opcodes.RET_NUMBER;
+                                            code.push(opCode, p1.value);
+                                        }
+                                        else
+                                            throw "RET does not support this operand";
+                                    }
                                     break;
 
                                 case 'MUL':
@@ -516,6 +553,15 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                         opCode = opcodes.AND_ADDRESS_WITH_REG;
                                     else if (p1.type === "register" && p2.type === "number")
                                         opCode = opcodes.AND_NUMBER_WITH_REG;
+                                    // JCM added ...
+                                    else if (p1.type === "address" && p2.type === "register")
+                                        opCode = opcodes.AND_REG_TO_ADDRESS;
+                                    else if (p1.type === "regaddress" && p2.type === "register")
+                                        opCode = opcodes.AND_REG_TO_REGADDRESS;
+                                    else if (p1.type === "address" && p2.type === "number")
+                                        opCode = opcodes.AND_NUMBER_TO_ADDRESS;
+                                    else if (p1.type === "regaddress" && p2.type === "number")
+                                        opCode = opcodes.AND_NUMBER_TO_REGADDRESS;
                                     else
                                         throw "AND does not support this operands";
 
@@ -533,6 +579,15 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                         opCode = opcodes.OR_ADDRESS_WITH_REG;
                                     else if (p1.type === "register" && p2.type === "number")
                                         opCode = opcodes.OR_NUMBER_WITH_REG;
+                                    // JCM added ...
+                                    else if (p1.type === "address" && p2.type === "register")
+                                        opCode = opcodes.OR_REG_TO_ADDRESS;
+                                    else if (p1.type === "regaddress" && p2.type === "register")
+                                        opCode = opcodes.OR_REG_TO_REGADDRESS;
+                                    else if (p1.type === "address" && p2.type === "number")
+                                        opCode = opcodes.OR_NUMBER_TO_ADDRESS;
+                                    else if (p1.type === "regaddress" && p2.type === "number")
+                                        opCode = opcodes.OR_NUMBER_TO_REGADDRESS;
                                     else
                                         throw "OR does not support this operands";
 
@@ -550,6 +605,15 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                         opCode = opcodes.XOR_ADDRESS_WITH_REG;
                                     else if (p1.type === "register" && p2.type === "number")
                                         opCode = opcodes.XOR_NUMBER_WITH_REG;
+                                    // JCM added ...
+                                    else if (p1.type === "address" && p2.type === "register")
+                                        opCode = opcodes.XOR_REG_TO_ADDRESS;
+                                    else if (p1.type === "regaddress" && p2.type === "register")
+                                        opCode = opcodes.XOR_REG_TO_REGADDRESS;
+                                    else if (p1.type === "address" && p2.type === "number")
+                                        opCode = opcodes.XOR_NUMBER_TO_ADDRESS;
+                                    else if (p1.type === "regaddress" && p2.type === "number")
+                                        opCode = opcodes.XOR_NUMBER_TO_REGADDRESS;
                                     else
                                         throw "XOR does not support this operands";
 
@@ -583,7 +647,7 @@ app.service('assembler', ['opcodes', function (opcodes) {
                                         throw instr + " does not support this operands";
 
                                     code.push(opCode, p1.value, p2.value);
-                                    break;
+                                break;
                                 case 'SHR':
                                 case 'SAR':
                                     p1 = getValue(match[op1_group]);

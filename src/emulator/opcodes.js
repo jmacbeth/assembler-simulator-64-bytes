@@ -73,7 +73,37 @@ app.service('opcodes', [function() {
         SHR_REG_WITH_REG: 94,
         SHR_REGADDRESS_WITH_REG: 95,
         SHR_ADDRESS_WITH_REG: 96,
-        SHR_NUMBER_WITH_REG: 97
+        SHR_NUMBER_WITH_REG: 97,
+
+        // Added by JCM
+        // Instructions above do not allow ADD, SUB, etc with ADDRESS
+        // or REGADDRESS as destination, so these have been added below
+
+        ADD_REG_TO_ADDRESS: 98,
+        ADD_REG_TO_REGADDRESS: 99,
+        ADD_NUMBER_TO_ADDRESS: 100,
+        ADD_NUMBER_TO_REGADDRESS: 101,
+        SUB_REG_FROM_ADDRESS: 102,
+        SUB_REG_FROM_REGADDRESS: 103,
+        SUB_NUMBER_FROM_ADDRESS: 104,
+        SUB_NUMBER_FROM_REGADDRESS: 105,
+        AND_REG_TO_ADDRESS: 106,
+        AND_REG_TO_REGADDRESS: 107,
+        AND_NUMBER_TO_ADDRESS: 108,
+        AND_NUMBER_TO_REGADDRESS: 109,
+        OR_REG_TO_ADDRESS: 110,
+        OR_REG_TO_REGADDRESS: 111,
+        OR_NUMBER_TO_ADDRESS: 112,
+        OR_NUMBER_TO_REGADDRESS: 113,
+        XOR_REG_TO_ADDRESS: 114,
+        XOR_REG_TO_REGADDRESS: 115,
+        XOR_NUMBER_TO_ADDRESS: 116,
+        XOR_NUMBER_TO_REGADDRESS: 117,
+        CMP_REG_TO_ADDRESS: 118,
+        CMP_REG_TO_REGADDRESS: 119,
+        CMP_NUMBER_TO_ADDRESS: 120,
+        CMP_NUMBER_TO_REGADDRESS: 121,
+        RET_NUMBER: 122
     };
 
     return opcodes;

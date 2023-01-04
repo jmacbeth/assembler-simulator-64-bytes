@@ -3,7 +3,7 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'ass
     $scope.cpu = cpu;
     $scope.error = '';
     $scope.isRunning = false;
-    $scope.displayHex = true;
+    $scope.displayHex = false; // JCM: decimal by default for early classes
     $scope.displayInstr = true;
     $scope.displayA = false;
     $scope.displayB = false;
@@ -14,9 +14,9 @@ app.controller('Ctrl', ['$document', '$scope', '$timeout', 'cpu', 'memory', 'ass
                      {speed: 8, desc: "8 HZ"},
                      {speed: 16, desc: "16 HZ"}];
     $scope.speed = 4;
-    $scope.outputStartIndex = 232;
+    $scope.outputStartIndex = 60;
 
-    $scope.code = "; Simple example\n; Writes Hello World to the output\n\n	JMP start\nhello: DB \"Hello World!\" ; Variable\n       DB 0	; String terminator\n\nstart:\n	MOV C, hello    ; Point to var \n	MOV D, 232	; Point to output\n	CALL print\n        HLT             ; Stop execution\n\nprint:			; print(C:*from, D:*to)\n	PUSH A\n	PUSH B\n	MOV B, 0\n.loop:\n	MOV A, [C]	; Get char from var\n	MOV [D], A	; Write to output\n	INC C\n	INC D  \n	CMP B, [C]	; Check if end\n	JNZ .loop	; jump if not\n\n	POP B\n	POP A\n	RET";
+    $scope.code = "; Simple example\n  mov [63], 'H'\n  hlt\n";
 
     $scope.reset = function () {
         cpu.reset();

@@ -96,15 +96,17 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
                     }
                 };
 
+                // JCM: changed it so that SP always points to the thing
+                // on the top of the stack, as in x86
                 var push = function(value) {
-                    memory.store(self.sp--, value);
+                    memory.store(--self.sp, value);
                     if (self.sp < self.minSP) {
                         throw "Stack overflow";
                     }
                 };
 
                 var pop = function() {
-                    var value = memory.load(++self.sp);
+                    var value = memory.load(self.sp++);
                     if (self.sp > self.maxSP) {
                         throw "Stack underflow";
                     }
@@ -125,6 +127,7 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
                 }
                 
                 var regTo, regFrom, memFrom, memTo, number;
+                var retAddr, extraBytesToPop;
                 var instr = memory.load(self.ip);
                 switch(instr) {
                     case opcodes.NONE:
@@ -566,6 +569,190 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
                         self.gpr[regTo] = checkOperation(self.gpr[regTo] >>> number);
                         self.ip++;
                         break;
+                    // JCM: added more opcodes
+
+                    case opcodes.ADD_REG_TO_ADDRESS:
+                        memTo = memory.load(++self.ip);
+                        regFrom = checkGPR_SP(memory.load(++self.ip));
+                        memory.store(memTo, checkOperation(memory.load(memTo) + getGPR_SP(regFrom)));
+                        self.ip++;
+                        break;
+                    case opcodes.ADD_REG_TO_REGADDRESS:
+                        regTo = memory.load(++self.ip);
+                        regFrom = checkGPR_SP(memory.load(++self.ip));
+                        memory.store(indirectRegisterAddress(regTo),
+                                 checkOperation(memory.load(indirectRegisterAddress(regTo)) +
+                                                getGPR_SP(regFrom)));
+                        self.ip++;
+                        break;
+                    case opcodes.ADD_NUMBER_TO_ADDRESS:
+                        memTo = memory.load(++self.ip);
+                        number = memory.load(++self.ip);
+                        memory.store(memTo, checkOperation(memory.load(memTo) + number));
+                        self.ip++;
+                        break;
+                    case opcodes.ADD_NUMBER_TO_REGADDRESS:
+                        regTo = memory.load(++self.ip);
+                        number = memory.load(++self.ip);
+                        memory.store(indirectRegisterAddress(regTo),
+                                     checkOperation(memory.load(indirectRegisterAddress(regTo)) +
+                                                    number));
+                        self.ip++;
+                        break;
+                    // extra for SUB
+                    case opcodes.SUB_REG_FROM_ADDRESS:
+                        memTo = memory.load(++self.ip);
+                        regFrom = checkGPR_SP(memory.load(++self.ip));
+                        memory.store(memTo, checkOperation(memory.load(memTo) - getGPR_SP(regFrom)));
+                        self.ip++;
+                        break;
+                    case opcodes.SUB_REG_FROM_REGADDRESS:
+                        regTo = memory.load(++self.ip);
+                        regFrom = checkGPR_SP(memory.load(++self.ip));
+                        memory.store(indirectRegisterAddress(regTo),
+                                 checkOperation(memory.load(indirectRegisterAddress(regTo)) -
+                                                getGPR_SP(regFrom)));
+                        self.ip++;
+                        break;
+                    case opcodes.SUB_NUMBER_FROM_ADDRESS:
+                        memTo = memory.load(++self.ip);
+                        number = memory.load(++self.ip);
+                        memory.store(memTo, checkOperation(memory.load(memTo) - number));
+                        self.ip++;
+                        break;
+                    case opcodes.SUB_NUMBER_FROM_REGADDRESS:
+                        regTo = memory.load(++self.ip);
+                        number = memory.load(++self.ip);
+                        memory.store(indirectRegisterAddress(regTo),
+                                     checkOperation(memory.load(indirectRegisterAddress(regTo)) -
+                                                    number));
+                        self.ip++;
+                        break;
+                    // extra for AND
+                    case opcodes.AND_REG_TO_ADDRESS:
+                        memTo = memory.load(++self.ip);
+                        regFrom = checkGPR_SP(memory.load(++self.ip));
+                        memory.store(memTo, checkOperation(memory.load(memTo) & getGPR_SP(regFrom)));
+                        self.ip++;
+                        break;
+                    case opcodes.AND_REG_TO_REGADDRESS:
+                        regTo = memory.load(++self.ip);
+                        regFrom = checkGPR_SP(memory.load(++self.ip));
+                        memory.store(indirectRegisterAddress(regTo),
+                                 checkOperation(memory.load(indirectRegisterAddress(regTo)) &
+                                                getGPR_SP(regFrom)));
+                        self.ip++;
+                        break;
+                    case opcodes.AND_NUMBER_TO_ADDRESS:
+                        memTo = memory.load(++self.ip);
+                        number = memory.load(++self.ip);
+                        memory.store(memTo, checkOperation(memory.load(memTo) & number));
+                        self.ip++;
+                        break;
+                    case opcodes.AND_NUMBER_TO_REGADDRESS:
+                        regTo = memory.load(++self.ip);
+                        number = memory.load(++self.ip);
+                        memory.store(indirectRegisterAddress(regTo),
+                                     checkOperation(memory.load(indirectRegisterAddress(regTo)) &
+                                                    number));
+                        self.ip++;
+                        break;
+                    // extra for OR                    
+                    case opcodes.OR_REG_TO_ADDRESS:
+                        memTo = memory.load(++self.ip);
+                        regFrom = checkGPR_SP(memory.load(++self.ip));
+                        memory.store(memTo, checkOperation(memory.load(memTo) | getGPR_SP(regFrom)));
+                        self.ip++;
+                        break;
+                    case opcodes.OR_REG_TO_REGADDRESS:
+                        regTo = memory.load(++self.ip);
+                        regFrom = checkGPR_SP(memory.load(++self.ip));
+                        memory.store(indirectRegisterAddress(regTo),
+                                 checkOperation(memory.load(indirectRegisterAddress(regTo)) |
+                                                getGPR_SP(regFrom)));
+                        self.ip++;
+                        break;
+                    case opcodes.OR_NUMBER_TO_ADDRESS:
+                        memTo = memory.load(++self.ip);
+                        number = memory.load(++self.ip);
+                        memory.store(memTo, checkOperation(memory.load(memTo) | number));
+                        self.ip++;
+                        break;
+                    case opcodes.OR_NUMBER_TO_REGADDRESS:
+                        regTo = memory.load(++self.ip);
+                        number = memory.load(++self.ip);
+                        memory.store(indirectRegisterAddress(regTo),
+                                     checkOperation(memory.load(indirectRegisterAddress(regTo)) |
+                                                    number));
+                        self.ip++;
+                        break;
+                    // extra for XOR
+                    case opcodes.XOR_REG_TO_ADDRESS:
+                        memTo = memory.load(++self.ip);
+                        regFrom = checkGPR_SP(memory.load(++self.ip));
+                        memory.store(memTo, checkOperation(memory.load(memTo) ^ getGPR_SP(regFrom)));
+                        self.ip++;
+                        break;
+                    case opcodes.XOR_REG_TO_REGADDRESS:
+                        regTo = memory.load(++self.ip);
+                        regFrom = checkGPR_SP(memory.load(++self.ip));
+                        memory.store(indirectRegisterAddress(regTo),
+                                 checkOperation(memory.load(indirectRegisterAddress(regTo)) ^
+                                                getGPR_SP(regFrom)));
+                        self.ip++;
+                        break;
+                    case opcodes.XOR_NUMBER_TO_ADDRESS:
+                        memTo = memory.load(++self.ip);
+                        number = memory.load(++self.ip);
+                        memory.store(memTo, checkOperation(memory.load(memTo) ^ number));
+                        self.ip++;
+                        break;
+                    case opcodes.XOR_NUMBER_TO_REGADDRESS:
+                        regTo = memory.load(++self.ip);
+                        number = memory.load(++self.ip);
+                        memory.store(indirectRegisterAddress(regTo),
+                                     checkOperation(memory.load(indirectRegisterAddress(regTo)) ^
+                                                    number));
+                        self.ip++;
+                        break;
+                    // extra for CMP
+                    case opcodes.CMP_REG_TO_ADDRESS:
+                        memTo = memory.load(++self.ip);
+                        regFrom = checkGPR_SP(memory.load(++self.ip));
+                        checkOperation(memory.load(memTo) + getGPR_SP(regFrom));
+                        self.ip++;
+                        break;
+                    case opcodes.CMP_REG_TO_REGADDRESS:
+                        regTo = memory.load(++self.ip);
+                        regFrom = checkGPR_SP(memory.load(++self.ip));
+                        checkOperation(memory.load(indirectRegisterAddress(regTo)) +
+                                                getGPR_SP(regFrom));
+                        self.ip++;
+                        break;
+                    case opcodes.CMP_NUMBER_TO_ADDRESS:
+                        memTo = memory.load(++self.ip);
+                        number = memory.load(++self.ip);
+                        checkOperation(memory.load(memTo) + number);
+                        self.ip++;
+                        break;
+                    case opcodes.CMP_NUMBER_TO_REGADDRESS:
+                        regTo = memory.load(++self.ip);
+                        number = memory.load(++self.ip);
+                        checkOperation(memory.load(indirectRegisterAddress(regTo)) +
+                                                    number);
+                        self.ip++;
+                        break;
+
+                    case opcodes.RET_NUMBER:
+                        retAddr = pop();
+                        extraBytesToPop = memory.load(++self.ip);
+                        self.sp += extraBytesToPop;
+                        if (self.sp > self.maxSP) {
+                            throw "Stack underflow";
+                        }
+                        jump(retAddr);
+                        break;
+
                     default:
                         throw "Invalid op code: " + instr;
                 }
@@ -578,7 +765,7 @@ app.service('cpu', ['opcodes', 'memory', function(opcodes, memory) {
         },
         reset: function() {
             var self = this;
-            self.maxSP = 231;
+            self.maxSP = 59;
             self.minSP = 0;
 
             self.gpr = [0, 0, 0, 0];

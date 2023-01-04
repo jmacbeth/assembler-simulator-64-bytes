@@ -66,6 +66,7 @@
                                     <th style="text-align:center">A</th>
                                     <th style="text-align:center">B</th>
                                     <th style="text-align:center">IP</th>
+                                    <th style="text-align:center">SP</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -73,6 +74,7 @@
                                     <td><div style="margin:auto;" ng-class="displayA && 'marker marker-a'"><small>{{ cpu.gpr[0] | number:displayHex }}</small></div></td>
                                     <td><div style="margin:auto;" ng-class="displayB && 'marker marker-b'"><small>{{ cpu.gpr[1] | number:displayHex }}</small></div></td>
                                     <td><div style="margin:auto;" class="marker marker-ip"><small>{{ cpu.ip | number:displayHex }}</small></div></td>
+                                    <td><div style="margin:auto;" class="marker marker-sp"><small>{{ cpu.sp | number:displayHex }}</small></div></td>
 
 <!--                                    <td style="text-align:center;"><div style="align:left;"><span style="width:1em;" class="output"
                              ng-repeat="m in memory.data | startFrom: outputStartIndex track by $index">
@@ -93,10 +95,25 @@
                             </td>
                             </tr>
                         </tbody>
-                        </table>
-                        <p class="text-muted">RAM</p>
+                      </table>
+                      <p class="text-muted">RAM</p>
+                      <table>
+                        <tr>
+                          <td>
+                            <div style="width:1.6em;" class="source-code">
+                              <small>0<br></small>
+                              <small>8<br></small>
+                              <small>16<br></small>
+                              <small>24<br></small>
+                              <small>32<br></small>
+                              <small>40<br></small>
+                              <small>48<br></small>
+                              <small>56<br></small>
+                            </div>
+                          </td>
+                        <td>
                         <!-- <div style="width:29em;" class="source-code"> -->
-                        <div class="source-code">
+                        <div style="width:16em;" class="source-code">
                             <div class="memory-block"
                                  ng-repeat="m in memory.data track by $index"
                                  ng-class="getMemoryCellCss($index)">
@@ -108,6 +125,9 @@
                                  </div>
                             </div>
                         </div>
+                        </td>
+                        </tr>
+                        </table>
                         <p style="margin-top:5px;">
                             <small>
                                 <span>Clock speed:</span>

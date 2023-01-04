@@ -260,6 +260,15 @@ var app = angular.module('ASMSimulator', []);
                                         opCode = opcodes.ADD_ADDRESS_TO_REG;
                                     else if (p1.type === "register" && p2.type === "number")
                                         opCode = opcodes.ADD_NUMBER_TO_REG;
+                                    // JCM added ...
+                                    else if (p1.type === "address" && p2.type === "register")
+                                        opCode = opcodes.ADD_REG_TO_ADDRESS;
+                                    else if (p1.type === "regaddress" && p2.type === "register")
+                                        opCode = opcodes.ADD_REG_TO_REGADDRESS;
+                                    else if (p1.type === "address" && p2.type === "number")
+                                        opCode = opcodes.ADD_NUMBER_TO_ADDRESS;
+                                    else if (p1.type === "regaddress" && p2.type === "number")
+                                        opCode = opcodes.ADD_NUMBER_TO_REGADDRESS;
                                     else
                                         throw "ADD does not support this operands";
 
@@ -277,6 +286,15 @@ var app = angular.module('ASMSimulator', []);
                                         opCode = opcodes.SUB_ADDRESS_FROM_REG;
                                     else if (p1.type === "register" && p2.type === "number")
                                         opCode = opcodes.SUB_NUMBER_FROM_REG;
+                                    // JCM added ...
+                                    else if (p1.type === "address" && p2.type === "register")
+                                        opCode = opcodes.SUB_REG_FROM_ADDRESS;
+                                    else if (p1.type === "regaddress" && p2.type === "register")
+                                        opCode = opcodes.SUB_REG_FROM_REGADDRESS;
+                                    else if (p1.type === "address" && p2.type === "number")
+                                        opCode = opcodes.SUB_NUMBER_FROM_ADDRESS;
+                                    else if (p1.type === "regaddress" && p2.type === "number")
+                                        opCode = opcodes.SUB_NUMBER_FROM_REGADDRESS;
                                     else
                                         throw "SUB does not support this operands";
 
@@ -318,6 +336,15 @@ var app = angular.module('ASMSimulator', []);
                                         opCode = opcodes.CMP_ADDRESS_WITH_REG;
                                     else if (p1.type === "register" && p2.type === "number")
                                         opCode = opcodes.CMP_NUMBER_WITH_REG;
+                                    // JCM added ...
+                                    else if (p1.type === "address" && p2.type === "register")
+                                        opCode = opcodes.CMP_REG_TO_ADDRESS;
+                                    else if (p1.type === "regaddress" && p2.type === "register")
+                                        opCode = opcodes.CMP_REG_TO_REGADDRESS;
+                                    else if (p1.type === "address" && p2.type === "number")
+                                        opCode = opcodes.CMP_NUMBER_TO_ADDRESS;
+                                    else if (p1.type === "regaddress" && p2.type === "number")
+                                        opCode = opcodes.CMP_NUMBER_TO_REGADDRESS;
                                     else
                                         throw "CMP does not support this operands";
 
@@ -464,11 +491,21 @@ var app = angular.module('ASMSimulator', []);
                                     code.push(opCode, p1.value);
                                     break;
                                 case 'RET':
-                                    checkNoExtraArg(instr, match[op1_group]);
+                                    // JCM: now supports arg for ret
+                                    checkNoExtraArg(instr, match[op2_group]);
 
-                                    opCode = opcodes.RET;
-
-                                    code.push(opCode);
+                                    if (match[op1_group] === undefined) {
+                                        opCode = opcodes.RET;
+                                        code.push(opCode);
+                                    } else {
+                                        p1 = getValue(match[op1_group]);
+                                        if (p1.type === "number") {
+                                            opCode = opcodes.RET_NUMBER;
+                                            code.push(opCode, p1.value);
+                                        }
+                                        else
+                                            throw "RET does not support this operand";
+                                    }
                                     break;
 
                                 case 'MUL':
@@ -517,6 +554,15 @@ var app = angular.module('ASMSimulator', []);
                                         opCode = opcodes.AND_ADDRESS_WITH_REG;
                                     else if (p1.type === "register" && p2.type === "number")
                                         opCode = opcodes.AND_NUMBER_WITH_REG;
+                                    // JCM added ...
+                                    else if (p1.type === "address" && p2.type === "register")
+                                        opCode = opcodes.AND_REG_TO_ADDRESS;
+                                    else if (p1.type === "regaddress" && p2.type === "register")
+                                        opCode = opcodes.AND_REG_TO_REGADDRESS;
+                                    else if (p1.type === "address" && p2.type === "number")
+                                        opCode = opcodes.AND_NUMBER_TO_ADDRESS;
+                                    else if (p1.type === "regaddress" && p2.type === "number")
+                                        opCode = opcodes.AND_NUMBER_TO_REGADDRESS;
                                     else
                                         throw "AND does not support this operands";
 
@@ -534,6 +580,15 @@ var app = angular.module('ASMSimulator', []);
                                         opCode = opcodes.OR_ADDRESS_WITH_REG;
                                     else if (p1.type === "register" && p2.type === "number")
                                         opCode = opcodes.OR_NUMBER_WITH_REG;
+                                    // JCM added ...
+                                    else if (p1.type === "address" && p2.type === "register")
+                                        opCode = opcodes.OR_REG_TO_ADDRESS;
+                                    else if (p1.type === "regaddress" && p2.type === "register")
+                                        opCode = opcodes.OR_REG_TO_REGADDRESS;
+                                    else if (p1.type === "address" && p2.type === "number")
+                                        opCode = opcodes.OR_NUMBER_TO_ADDRESS;
+                                    else if (p1.type === "regaddress" && p2.type === "number")
+                                        opCode = opcodes.OR_NUMBER_TO_REGADDRESS;
                                     else
                                         throw "OR does not support this operands";
 
@@ -551,6 +606,15 @@ var app = angular.module('ASMSimulator', []);
                                         opCode = opcodes.XOR_ADDRESS_WITH_REG;
                                     else if (p1.type === "register" && p2.type === "number")
                                         opCode = opcodes.XOR_NUMBER_WITH_REG;
+                                    // JCM added ...
+                                    else if (p1.type === "address" && p2.type === "register")
+                                        opCode = opcodes.XOR_REG_TO_ADDRESS;
+                                    else if (p1.type === "regaddress" && p2.type === "register")
+                                        opCode = opcodes.XOR_REG_TO_REGADDRESS;
+                                    else if (p1.type === "address" && p2.type === "number")
+                                        opCode = opcodes.XOR_NUMBER_TO_ADDRESS;
+                                    else if (p1.type === "regaddress" && p2.type === "number")
+                                        opCode = opcodes.XOR_NUMBER_TO_REGADDRESS;
                                     else
                                         throw "XOR does not support this operands";
 
@@ -584,7 +648,7 @@ var app = angular.module('ASMSimulator', []);
                                         throw instr + " does not support this operands";
 
                                     code.push(opCode, p1.value, p2.value);
-                                    break;
+                                break;
                                 case 'SHR':
                                 case 'SAR':
                                     p1 = getValue(match[op1_group]);
@@ -733,15 +797,17 @@ var app = angular.module('ASMSimulator', []);
                     }
                 };
 
+                // JCM: changed it so that SP always points to the thing
+                // on the top of the stack, as in x86
                 var push = function(value) {
-                    memory.store(self.sp--, value);
+                    memory.store(--self.sp, value);
                     if (self.sp < self.minSP) {
                         throw "Stack overflow";
                     }
                 };
 
                 var pop = function() {
-                    var value = memory.load(++self.sp);
+                    var value = memory.load(self.sp++);
                     if (self.sp > self.maxSP) {
                         throw "Stack underflow";
                     }
@@ -762,6 +828,7 @@ var app = angular.module('ASMSimulator', []);
                 }
                 
                 var regTo, regFrom, memFrom, memTo, number;
+                var retAddr, extraBytesToPop;
                 var instr = memory.load(self.ip);
                 switch(instr) {
                     case opcodes.NONE:
@@ -1203,6 +1270,190 @@ var app = angular.module('ASMSimulator', []);
                         self.gpr[regTo] = checkOperation(self.gpr[regTo] >>> number);
                         self.ip++;
                         break;
+                    // JCM: added more opcodes
+
+                    case opcodes.ADD_REG_TO_ADDRESS:
+                        memTo = memory.load(++self.ip);
+                        regFrom = checkGPR_SP(memory.load(++self.ip));
+                        memory.store(memTo, checkOperation(memory.load(memTo) + getGPR_SP(regFrom)));
+                        self.ip++;
+                        break;
+                    case opcodes.ADD_REG_TO_REGADDRESS:
+                        regTo = memory.load(++self.ip);
+                        regFrom = checkGPR_SP(memory.load(++self.ip));
+                        memory.store(indirectRegisterAddress(regTo),
+                                 checkOperation(memory.load(indirectRegisterAddress(regTo)) +
+                                                getGPR_SP(regFrom)));
+                        self.ip++;
+                        break;
+                    case opcodes.ADD_NUMBER_TO_ADDRESS:
+                        memTo = memory.load(++self.ip);
+                        number = memory.load(++self.ip);
+                        memory.store(memTo, checkOperation(memory.load(memTo) + number));
+                        self.ip++;
+                        break;
+                    case opcodes.ADD_NUMBER_TO_REGADDRESS:
+                        regTo = memory.load(++self.ip);
+                        number = memory.load(++self.ip);
+                        memory.store(indirectRegisterAddress(regTo),
+                                     checkOperation(memory.load(indirectRegisterAddress(regTo)) +
+                                                    number));
+                        self.ip++;
+                        break;
+                    // extra for SUB
+                    case opcodes.SUB_REG_FROM_ADDRESS:
+                        memTo = memory.load(++self.ip);
+                        regFrom = checkGPR_SP(memory.load(++self.ip));
+                        memory.store(memTo, checkOperation(memory.load(memTo) - getGPR_SP(regFrom)));
+                        self.ip++;
+                        break;
+                    case opcodes.SUB_REG_FROM_REGADDRESS:
+                        regTo = memory.load(++self.ip);
+                        regFrom = checkGPR_SP(memory.load(++self.ip));
+                        memory.store(indirectRegisterAddress(regTo),
+                                 checkOperation(memory.load(indirectRegisterAddress(regTo)) -
+                                                getGPR_SP(regFrom)));
+                        self.ip++;
+                        break;
+                    case opcodes.SUB_NUMBER_FROM_ADDRESS:
+                        memTo = memory.load(++self.ip);
+                        number = memory.load(++self.ip);
+                        memory.store(memTo, checkOperation(memory.load(memTo) - number));
+                        self.ip++;
+                        break;
+                    case opcodes.SUB_NUMBER_FROM_REGADDRESS:
+                        regTo = memory.load(++self.ip);
+                        number = memory.load(++self.ip);
+                        memory.store(indirectRegisterAddress(regTo),
+                                     checkOperation(memory.load(indirectRegisterAddress(regTo)) -
+                                                    number));
+                        self.ip++;
+                        break;
+                    // extra for AND
+                    case opcodes.AND_REG_TO_ADDRESS:
+                        memTo = memory.load(++self.ip);
+                        regFrom = checkGPR_SP(memory.load(++self.ip));
+                        memory.store(memTo, checkOperation(memory.load(memTo) & getGPR_SP(regFrom)));
+                        self.ip++;
+                        break;
+                    case opcodes.AND_REG_TO_REGADDRESS:
+                        regTo = memory.load(++self.ip);
+                        regFrom = checkGPR_SP(memory.load(++self.ip));
+                        memory.store(indirectRegisterAddress(regTo),
+                                 checkOperation(memory.load(indirectRegisterAddress(regTo)) &
+                                                getGPR_SP(regFrom)));
+                        self.ip++;
+                        break;
+                    case opcodes.AND_NUMBER_TO_ADDRESS:
+                        memTo = memory.load(++self.ip);
+                        number = memory.load(++self.ip);
+                        memory.store(memTo, checkOperation(memory.load(memTo) & number));
+                        self.ip++;
+                        break;
+                    case opcodes.AND_NUMBER_TO_REGADDRESS:
+                        regTo = memory.load(++self.ip);
+                        number = memory.load(++self.ip);
+                        memory.store(indirectRegisterAddress(regTo),
+                                     checkOperation(memory.load(indirectRegisterAddress(regTo)) &
+                                                    number));
+                        self.ip++;
+                        break;
+                    // extra for OR                    
+                    case opcodes.OR_REG_TO_ADDRESS:
+                        memTo = memory.load(++self.ip);
+                        regFrom = checkGPR_SP(memory.load(++self.ip));
+                        memory.store(memTo, checkOperation(memory.load(memTo) | getGPR_SP(regFrom)));
+                        self.ip++;
+                        break;
+                    case opcodes.OR_REG_TO_REGADDRESS:
+                        regTo = memory.load(++self.ip);
+                        regFrom = checkGPR_SP(memory.load(++self.ip));
+                        memory.store(indirectRegisterAddress(regTo),
+                                 checkOperation(memory.load(indirectRegisterAddress(regTo)) |
+                                                getGPR_SP(regFrom)));
+                        self.ip++;
+                        break;
+                    case opcodes.OR_NUMBER_TO_ADDRESS:
+                        memTo = memory.load(++self.ip);
+                        number = memory.load(++self.ip);
+                        memory.store(memTo, checkOperation(memory.load(memTo) | number));
+                        self.ip++;
+                        break;
+                    case opcodes.OR_NUMBER_TO_REGADDRESS:
+                        regTo = memory.load(++self.ip);
+                        number = memory.load(++self.ip);
+                        memory.store(indirectRegisterAddress(regTo),
+                                     checkOperation(memory.load(indirectRegisterAddress(regTo)) |
+                                                    number));
+                        self.ip++;
+                        break;
+                    // extra for XOR
+                    case opcodes.XOR_REG_TO_ADDRESS:
+                        memTo = memory.load(++self.ip);
+                        regFrom = checkGPR_SP(memory.load(++self.ip));
+                        memory.store(memTo, checkOperation(memory.load(memTo) ^ getGPR_SP(regFrom)));
+                        self.ip++;
+                        break;
+                    case opcodes.XOR_REG_TO_REGADDRESS:
+                        regTo = memory.load(++self.ip);
+                        regFrom = checkGPR_SP(memory.load(++self.ip));
+                        memory.store(indirectRegisterAddress(regTo),
+                                 checkOperation(memory.load(indirectRegisterAddress(regTo)) ^
+                                                getGPR_SP(regFrom)));
+                        self.ip++;
+                        break;
+                    case opcodes.XOR_NUMBER_TO_ADDRESS:
+                        memTo = memory.load(++self.ip);
+                        number = memory.load(++self.ip);
+                        memory.store(memTo, checkOperation(memory.load(memTo) ^ number));
+                        self.ip++;
+                        break;
+                    case opcodes.XOR_NUMBER_TO_REGADDRESS:
+                        regTo = memory.load(++self.ip);
+                        number = memory.load(++self.ip);
+                        memory.store(indirectRegisterAddress(regTo),
+                                     checkOperation(memory.load(indirectRegisterAddress(regTo)) ^
+                                                    number));
+                        self.ip++;
+                        break;
+                    // extra for CMP
+                    case opcodes.CMP_REG_TO_ADDRESS:
+                        memTo = memory.load(++self.ip);
+                        regFrom = checkGPR_SP(memory.load(++self.ip));
+                        checkOperation(memory.load(memTo) + getGPR_SP(regFrom));
+                        self.ip++;
+                        break;
+                    case opcodes.CMP_REG_TO_REGADDRESS:
+                        regTo = memory.load(++self.ip);
+                        regFrom = checkGPR_SP(memory.load(++self.ip));
+                        checkOperation(memory.load(indirectRegisterAddress(regTo)) +
+                                                getGPR_SP(regFrom));
+                        self.ip++;
+                        break;
+                    case opcodes.CMP_NUMBER_TO_ADDRESS:
+                        memTo = memory.load(++self.ip);
+                        number = memory.load(++self.ip);
+                        checkOperation(memory.load(memTo) + number);
+                        self.ip++;
+                        break;
+                    case opcodes.CMP_NUMBER_TO_REGADDRESS:
+                        regTo = memory.load(++self.ip);
+                        number = memory.load(++self.ip);
+                        checkOperation(memory.load(indirectRegisterAddress(regTo)) +
+                                                    number);
+                        self.ip++;
+                        break;
+
+                    case opcodes.RET_NUMBER:
+                        retAddr = pop();
+                        extraBytesToPop = memory.load(++self.ip);
+                        self.sp += extraBytesToPop;
+                        if (self.sp > self.maxSP) {
+                            throw "Stack underflow";
+                        }
+                        jump(retAddr);
+                        break;
+
                     default:
                         throw "Invalid op code: " + instr;
                 }
@@ -1215,7 +1466,7 @@ var app = angular.module('ASMSimulator', []);
         },
         reset: function() {
             var self = this;
-            self.maxSP = 59;  // for 64 bytes, I set the memory mapping for output at addresses 60-63, so 59 for the SP  
+            self.maxSP = 59;
             self.minSP = 0;
 
             self.gpr = [0, 0, 0, 0];
@@ -1342,7 +1593,37 @@ var app = angular.module('ASMSimulator', []);
         SHR_REG_WITH_REG: 94,
         SHR_REGADDRESS_WITH_REG: 95,
         SHR_ADDRESS_WITH_REG: 96,
-        SHR_NUMBER_WITH_REG: 97
+        SHR_NUMBER_WITH_REG: 97,
+
+        // Added by JCM
+        // Instructions above do not allow ADD, SUB, etc with ADDRESS
+        // or REGADDRESS as destination, so these have been added below
+
+        ADD_REG_TO_ADDRESS: 98,
+        ADD_REG_TO_REGADDRESS: 99,
+        ADD_NUMBER_TO_ADDRESS: 100,
+        ADD_NUMBER_TO_REGADDRESS: 101,
+        SUB_REG_FROM_ADDRESS: 102,
+        SUB_REG_FROM_REGADDRESS: 103,
+        SUB_NUMBER_FROM_ADDRESS: 104,
+        SUB_NUMBER_FROM_REGADDRESS: 105,
+        AND_REG_TO_ADDRESS: 106,
+        AND_REG_TO_REGADDRESS: 107,
+        AND_NUMBER_TO_ADDRESS: 108,
+        AND_NUMBER_TO_REGADDRESS: 109,
+        OR_REG_TO_ADDRESS: 110,
+        OR_REG_TO_REGADDRESS: 111,
+        OR_NUMBER_TO_ADDRESS: 112,
+        OR_NUMBER_TO_REGADDRESS: 113,
+        XOR_REG_TO_ADDRESS: 114,
+        XOR_REG_TO_REGADDRESS: 115,
+        XOR_NUMBER_TO_ADDRESS: 116,
+        XOR_NUMBER_TO_REGADDRESS: 117,
+        CMP_REG_TO_ADDRESS: 118,
+        CMP_REG_TO_REGADDRESS: 119,
+        CMP_NUMBER_TO_ADDRESS: 120,
+        CMP_NUMBER_TO_REGADDRESS: 121,
+        RET_NUMBER: 122
     };
 
     return opcodes;
@@ -1352,7 +1633,7 @@ var app = angular.module('ASMSimulator', []);
     $scope.cpu = cpu;
     $scope.error = '';
     $scope.isRunning = false;
-    $scope.displayHex = true;
+    $scope.displayHex = false; // JCM: decimal by default for early classes
     $scope.displayInstr = true;
     $scope.displayA = false;
     $scope.displayB = false;
@@ -1365,7 +1646,7 @@ var app = angular.module('ASMSimulator', []);
     $scope.speed = 4;
     $scope.outputStartIndex = 60;
 
-    $scope.code = "; Simple example\n	JMP start\nhello: DB \"Hello World!\"\n       DB 0";
+    $scope.code = "; Simple example\n  mov [63], 'H'\n  hlt\n";
 
     $scope.reset = function () {
         cpu.reset();
